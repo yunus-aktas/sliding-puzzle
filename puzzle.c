@@ -217,3 +217,44 @@ void bfsCoz() {
     }
     printf("Cozum bulunamadi!\n");
 }
+
+
+
+
+int main() {
+    char yon;
+    int hamle = 0;
+
+    printf("=== 3x3 Sliding Puzzle ===\n");
+    printf("Kontroller: W = Yukari | S = Asagi | A = Sol | D = Sag\n");
+    printf("Cikis icin Q tusuna basin.\n");
+    printf("Ipucu icin H tusuna basin.\n");
+
+    tahtayiBaslat();
+
+    while (1) {
+        tahtayiCiz();
+        printf("Hamle: %d\n", hamle);
+        printf("Yon girin: ");
+        scanf(" %c", &yon);
+
+        if (yon == 'q' || yon == 'Q') {
+            printf("Oyundan cikiliyor...\n");
+            break;
+        }
+        if (yon == 'h' || yon == 'H') {
+            printf("En kisa cozum hesaplaniyor...\n");
+            bfsCoz();
+            continue;
+        }
+        if (tasHareketEttir(yon)) {
+            hamle++;
+        }
+        if (oyunBittiMi()) {
+            tahtayiCiz();
+            printf("\nTebrikler! Puzzlei %d hamlede cozdunuz!\n", hamle);
+            break;
+        }
+    }
+    return 0;
+}
