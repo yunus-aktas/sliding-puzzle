@@ -76,3 +76,33 @@ void tahtayiBaslat(){
     }
     } while (!cozulebilirMi());
 }
+
+
+
+
+int tasHareketEttir(char yon) {
+    int yeniX = bosX;
+    int yeniY = bosY;
+                                                
+    if (yon == 'w' || yon == 'W') yeniX = bosX - 1;
+    else if (yon == 's' || yon == 'S') yeniX = bosX + 1;
+    else if (yon == 'a' || yon == 'A') yeniY = bosY - 1;
+    else if (yon == 'd' || yon == 'D') yeniY = bosY + 1;
+    else {
+        printf("Gecersiz giris! Lutfen W/A/S/D kullanin.\n");
+        return 0;
+    }
+
+    if (yeniX < 0 || yeniX > 2 || yeniY < 0 || yeniY > 2) {
+        printf("Gecersiz hamle! Sinir disi.\n");
+        return 0;
+    }
+
+    tahta[bosX][bosY] = tahta[yeniX][yeniY];
+    tahta[yeniX][yeniY] = 0;
+
+    bosX = yeniX;
+    bosY = yeniY;
+
+    return 1;
+}
