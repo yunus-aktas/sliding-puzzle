@@ -124,3 +124,96 @@ int oyunBittiMi() {
     }
     return 1;
 }
+
+
+
+
+#define MAX_DURUM 500000
+
+typedef struct {
+    int tahta[3][3];
+    int bosX, bosY;
+    char hamleler[500];
+    int hamleAdedi;
+} Durum;
+
+Durum kuyruk[MAX_DURUM];
+int on = 0, arka = 0;
+
+char ziyaretEdilen[MAX_DURUM][10];
+int ziyaretSayisi = 0;
+
+void tahtayiStringe(int t[3][3], char *str) {
+    int k = 0;
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
+            str[k++] = '0' + t[i][j];
+    str[k] = '\0';
+}
+
+int ziyaretEdildiMi(char *str) {
+    int i;
+    for (i = 0; i < ziyaretSayisi; i++)
+        if (strcmp(ziyaretEdilen[i], str) == 0)
+            return 1;
+    return 0;
+}
+
+void bfsCoz() {
+    int i,j;
+    on = 0; arka = 0; ziyaretSayisi = 0;
+
+    int yon[4][2] = {{-1,0},{1,0},{0,-1},{0,1}};
+    char yonAdi[4] = {'W','S','A','D'};
+
+    Durum baslangic;
+    memcpy(baslangic.tahta, tahta, sizeof(tahta));
+    baslangic.bosX = bosX;
+    baslangic.bosY = bosY;
+    baslangic.hamleler[0] = '\0';
+    baslangic.hamleAdedi = 0;
+    kuyruk[arka++] = baslangic;
+
+    while (on < arka) {
+        Durum simdiki = kuyruk[on++];
+
+        char str[10];
+        tahtayiStringe(simdiki.tahta, str);
+        if (ziyaretEdildiMi(str)) continue;
+        strcpy(ziyaretEdilen[ziyaretSayisi++], str);
+
+        int hedef[3][3] = {{1,2,3},{4,5,6},{7,8,0}};
+        int bitti = 1;
+        for (i = 0; i < 3; i++)
+            for (j = 0; j < 3; j++)
+                if (simdiki.tahta[i][j] != hedef[i][j]) bitti = 0;
+
+        if (bitti) {
+            printf("\nEn kisa cozum %d hamle:\n", simdiki.hamleAdedi);
+            printf("Hamle sirasi: %s\n", simdiki.hamleler);
+            return;
+        }
+
+        for (i = 0; i < 4; i++) {
+            int yeniX = simdiki.bosX + yon[i][0];
+            int yeniY = simdiki.bosY + yon[i][1];
+
+            if (yeniX < 0 || yeniX > 2 || yeniY < 0 || yeniY > 2) continue;
+
+            Durum yeni = simdiki;
+            yeni.tahta[simdiki.bosX][simdiki.bosY] = yeni.tahta[yeniX][yeniY];
+            yeni.tahta[yeniX][yeniY] = 0;
+            yeni.bosX = yeniX;
+            yeni.bosY = yeniY;
+
+            int uzunluk = strlen(yeni.hamleler);
+            yeni.hamleler[uzunluk] = yonAdi[i];
+            yeni.hamleler[uzunluk + 1] = '\0';
+            yeni.hamleAdedi++;
+
+            if(arka < MAX_DURUM)
+                kuyruk[arka++] = yeni;
+        }
+    }
+    printf("Cozum bulunamadi!\n");
+}
